@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +26,15 @@ public class Main {
         JComboBox<String> comboBox = new JComboBox();
         JCheckBox checkBox = new JCheckBox(".NET Version");
         //Add all the versions. And also disables the CheckBox
+        String userHome =  System.getProperty("user.home");
+        Path programsPath = Paths.get(userHome, "GodotPrograms");
         populateComboBox(comboBox);
         checkBox.setEnabled(false);
+        if (versions.isEmpty()) {
+            System.out.println("Uhh, you don't have any installations of Godot, please install one before using this.\n" +
+                    "This isn't the Minecraft Launcher after all");
+            System.exit(0);
+        }
         JButton button = new JButton("Open this instance of Godot");
         fileLocation = "C:\\Users\\" + user + "\\GodotPrograms\\" + versions.getFirst().getOriginalFilename();
         System.out.println(fileLocation);
