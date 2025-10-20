@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    static String user = "ra0002"; // Change to your actual username on your computer
+    static String user = System.getProperty("user.name");
     static String fileLocation = "";
     static List<GodotVersionInfo> versions = new ArrayList<>();
     static String latestVersion = "4.5.1";
