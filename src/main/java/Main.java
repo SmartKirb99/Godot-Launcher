@@ -4,16 +4,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class Main {
     static String user = System.getProperty("user.name");
     static String fileLocation = "";
     static List<GodotVersionInfo> versions = new ArrayList<>();
     static String latestVersion = "4.5.1";
+    static String latest3Version = "3.6.1";
     /**
      * Average JFrame stuff, uses {@link #populateComboBox(JComboBox)} to make the comboBox work
      */
@@ -27,17 +30,43 @@ public class Main {
         JCheckBox checkBox = new JCheckBox(".NET Version");
         //Add all the versions. And also disables the CheckBox
         String userHome =  System.getProperty("user.home");
-        Path programsPath = Paths.get(userHome, "GodotPrograms");
+        String directoryPath = userHome + "\\GodotPrograms";
+        Path programsPath = Paths.get(directoryPath);
+        JOptionPane.showMessageDialog(frame, "I can't tell if you have .NET versions installed, but if you do, then I recommend making sure\nyou also have the standard edtion to be able to run it in the launcher. Elsewise they won't appear in the Launcher","Warning", JOptionPane.WARNING_MESSAGE);
+        try{
+            if(Files.exists(programsPath)){
+
+            } else {
+                Files.createDirectories(programsPath);
+                JOptionPane.showMessageDialog(frame, "A Directory called GodotPrograms should be at: " + userHome + ". Go ahead and put your Godot Installations there, elsewise the program will give you an error and then quit.");
+            }
+        } catch (IOException e){
+            System.err.println("Failed to make directory: " + e.getMessage());
+        }
+
+        System.out.println("Programs Path: " + programsPath.toString());
         populateComboBox(comboBox);
-        checkBox.setEnabled(false);
+        checkBox.setSelected(false);
+        try{
+            if (hasMono.getFirst() == true){
+                checkBox.setEnabled(true);
+            } else {
+                checkBox.setEnabled(false);
+            }
+        } catch (NoSuchElementException e){
+            JOptionPane.showMessageDialog(frame, "You likely only have .NET installations, which kinda also requires the Standard edition to run.", "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            System.exit(1);
+        }
         if (versions.isEmpty()) {
-            System.out.println("Uhh, you don't have any installations of Godot, please install one before using this.\n" +
-                    "This isn't the Minecraft Launcher after all");
+            JOptionPane.showMessageDialog(frame,"Ah, you don't have any installations of Godot.\nThis ain't the Minecraft launcher.\nSo go and install Godot, then put it in " + programsPath +".\nIf you have only .NET versions, that's because the launcher uses a Check Box to run the mono version, so it's best to add the Standard version as well", "Error", JOptionPane.ERROR_MESSAGE);
+//            System.out.println("Uhh, you don't have any installations of Godot, please install one before using this.\n" +
+//                    "This isn't the Minecraft Launcher after all");
             System.exit(0);
         }
         JButton button = new JButton("Open this instance of Godot");
-        fileLocation = "C:\\Users\\" + user + "\\GodotPrograms\\" + versions.getFirst().getOriginalFilename();
-        System.out.println(fileLocation);
+        fileLocation = directoryPath + "\\" + versions.getFirst().getOriginalFilename();
+//        System.out.println(fileLocation);
 //        System.out.println(versions.getFirst().getOriginalFilename());
 
         comboBox.addActionListener(new ActionListener() {
@@ -47,7 +76,7 @@ public class Main {
                 checkBox.setEnabled(selectedVersion != null && hasMono.get(comboBox.getSelectedIndex()));
                 for (int i = 0; i < versions.size(); i++) {
                     if (i == comboBox.getSelectedIndex()) {
-                        fileLocation = "C:\\Users\\" + user + "\\GodotPrograms\\" + versions.get(i).getOriginalFilename();
+                        fileLocation = directoryPath + "\\" + versions.get(i).getOriginalFilename();
                         if (isMonoInstalled(comboBox.getSelectedIndex())) {
                             checkBox.setEnabled(true);
                         } else {
@@ -57,7 +86,7 @@ public class Main {
                     }
                 }
 
-                System.out.println(fileLocation);
+//                System.out.println(fileLocation);
             }
         });
 
@@ -65,7 +94,7 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedVersion =  (String) comboBox.getSelectedItem() + " .NET Version";
-                String originalVersion = "C:\\Users\\" + user + "\\GodotPrograms\\" + versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
+                String originalVersion = directoryPath + versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
                 String toInsert = "_mono";
                 int lastUnderscoreIndex = originalVersion.lastIndexOf("_");
                 if (lastUnderscoreIndex != -1) {
@@ -73,8 +102,8 @@ public class Main {
                     int extensionIndex = originalVersion.lastIndexOf(".");
                     String suffix = originalVersion.substring(lastUnderscoreIndex, extensionIndex);
                     String newVersion = prefix + toInsert + suffix;
-                    System.out.println(originalVersion);
-                    System.out.println(newVersion);
+//                    System.out.println(originalVersion);
+//                    System.out.println(newVersion);
                     fileLocation = newVersion;
                 }
                 System.out.println(checkBox.isSelected());
@@ -94,7 +123,7 @@ public class Main {
                         int extensionIndex = originalVersion.lastIndexOf(".");
                         String suffix = originalVersion.substring(lastUnderscoreIndex, extensionIndex);
                         String newVersion = prefix + toInsert + suffix + ".exe";
-                        System.out.println(newVersion);
+//                        System.out.println(newVersion);
                         fullPath = fileLocation + "\\" + newVersion;
                     } else {
                         fullPath = fileLocation + "\\" + versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
@@ -107,10 +136,10 @@ public class Main {
                     Process process = processBuilder.start();
 
                     int exitCode = process.waitFor();
-                    System.out.println("Godot Engine Exited with code " + exitCode);
+                    System.out.println("Godot Engine closed with code " + exitCode);
                 } catch (IOException | InterruptedException ex){
                     ex.printStackTrace();
-                    JOptionPane.showMessageDialog(frame, "Whoops, there was an error opening Godot ;-;... " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame, "Whoops, there was an error opening Godot ;-;... \n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -148,7 +177,7 @@ public class Main {
     public static void populateComboBox(JComboBox<String> comboBox) {
         List<String> filenames = new ArrayList<>();
         comboBox.removeAllItems();
-        File rootDirectory = new  File("C:\\Users\\"+ user +"\\GodotPrograms");
+        File rootDirectory = new  File(System.getProperty("user.home") + "\\GodotPrograms");
 
         if (rootDirectory.exists() && rootDirectory.isDirectory()) {
             File[] files = rootDirectory.listFiles();
@@ -171,16 +200,26 @@ public class Main {
             System.err.println("Whoops, apparently GodotPrograms isn't found within a specified directory. Perhaps create that folder and try again.");
         }
     }
+
+    /**
+     * Checks to see if the .NET version is installed for a version at a specific index
+     * @param index Because isMonoInstalled runs {@link #getMono() getMono().get(index)}, it uses a specified index to check if that specific version of Godot has the .NET version installed.
+     * @return
+     */
     public static boolean isMonoInstalled(int index){
         return getMono().get(index);
     }
 
+    /**
+     * Checks all versions to see if the .NET version of Godot is also installed
+     * @return
+     */
     public static List<Boolean> getMono(){
         List<String> filenames = new ArrayList<>();
         List<GodotVersionInfo> versions = new ArrayList<>();
         List<Boolean> hasMono = new ArrayList<>();
 
-        File rootDirectory = new  File("C:\\Users\\"+ user +"\\GodotPrograms");
+        File rootDirectory = new  File(System.getProperty("user.home") + "\\GodotPrograms");
 
         if (rootDirectory.exists() && rootDirectory.isDirectory()) {
             File[] files = rootDirectory.listFiles();
@@ -190,16 +229,23 @@ public class Main {
                     if (file.isDirectory() && !file.getName().contains("_mono")){
                         filenames.add(file.getName());
                         versions.add (new GodotVersionInfo(file.getName()));
-                        hasMono.add(false);
+                        if (i == 0){
+
+                        }
+                        else if (files[i - 1].getName().contains("_mono")){
+                            hasMono.add(true);
+                        }
+                        else {
+                            hasMono.add(false);
+                        }
                         i++;
                     } else if (file.isDirectory() && file.getName().contains("_mono")){
-                        hasMono.add(true);
                         i++;
                     }
                 }
             }
         } else {
-            System.err.println("Whoops, apparently GodotPrograms isn't found within C:\\Users\\"+ user +". Perhaps create that file and try again.");
+            System.err.println("Uh, so, this probably ran because the code didn't see GodotPrograms within " + System.getProperty("user.home") +". So just rerun it, it shouldn't give this error again");
         }
         return hasMono;
     }
