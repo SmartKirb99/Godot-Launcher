@@ -11,12 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * The Primary class, unsurprisingly, that handles all the Java Swing Stuff, and also all the versioning.
+ */
 public class Main {
     static String user = System.getProperty("user.name");
     static String fileLocation = "";
     static List<GodotVersionInfo> versions = new ArrayList<>();
     static String latestVersion = "4.5.1";
-    static String latest3Version = "3.6.1";
+    static String slashes = System.getProperty("file.separator");
     /**
      * Average JFrame stuff, uses {@link #populateComboBox(JComboBox)} to make the comboBox work
      */
@@ -30,7 +33,7 @@ public class Main {
         JCheckBox checkBox = new JCheckBox(".NET Version");
         //Add all the versions. And also disables the CheckBox
         String userHome =  System.getProperty("user.home");
-        String directoryPath = userHome + "\\GodotPrograms";
+        String directoryPath = userHome + slashes + "GodotPrograms";
         Path programsPath = Paths.get(directoryPath);
         try{
             if(Files.exists(programsPath)){
@@ -64,7 +67,7 @@ public class Main {
             System.exit(0);
         }
         JButton button = new JButton("Open this instance of Godot");
-        fileLocation = directoryPath + "\\" + versions.getFirst().getOriginalFilename();
+        fileLocation = directoryPath + slashes + versions.getFirst().getOriginalFilename();
 //        System.out.println(fileLocation);
 //        System.out.println(versions.getFirst().getOriginalFilename());
 
@@ -75,7 +78,7 @@ public class Main {
                 checkBox.setEnabled(selectedVersion != null && hasMono.get(comboBox.getSelectedIndex()));
                 for (int i = 0; i < versions.size(); i++) {
                     if (i == comboBox.getSelectedIndex()) {
-                        fileLocation = directoryPath + "\\" + versions.get(i).getOriginalFilename();
+                        fileLocation = directoryPath + slashes + versions.get(i).getOriginalFilename();
                         if (isMonoInstalled(comboBox.getSelectedIndex())) {
                             checkBox.setEnabled(true);
                         } else {
@@ -93,7 +96,7 @@ public class Main {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String selectedVersion =  (String) comboBox.getSelectedItem() + " .NET Version";
-                String originalVersion = directoryPath + versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
+                String originalVersion = directoryPath + slashes + versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
                 String toInsert = "_mono";
                 int lastUnderscoreIndex = originalVersion.lastIndexOf("_");
                 if (lastUnderscoreIndex != -1) {
@@ -123,9 +126,9 @@ public class Main {
                         String suffix = originalVersion.substring(lastUnderscoreIndex, extensionIndex);
                         String newVersion = prefix + toInsert + suffix + ".exe";
 //                        System.out.println(newVersion);
-                        fullPath = fileLocation + "\\" + newVersion;
+                        fullPath = fileLocation + slashes + newVersion;
                     } else {
-                        fullPath = fileLocation + "\\" + versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
+                        fullPath = fileLocation + slashes + versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
                     }
                     ProcessBuilder processBuilder = new ProcessBuilder(fullPath);
 
@@ -176,7 +179,7 @@ public class Main {
     public static void populateComboBox(JComboBox<String> comboBox) {
         List<String> filenames = new ArrayList<>();
         comboBox.removeAllItems();
-        File rootDirectory = new  File(System.getProperty("user.home") + "\\GodotPrograms");
+        File rootDirectory = new  File(System.getProperty("user.home") + slashes +"GodotPrograms");
 
         if (rootDirectory.exists() && rootDirectory.isDirectory()) {
             File[] files = rootDirectory.listFiles();
@@ -218,7 +221,7 @@ public class Main {
         List<GodotVersionInfo> versions = new ArrayList<>();
         List<Boolean> hasMono = new ArrayList<>();
 
-        File rootDirectory = new  File(System.getProperty("user.home") + "\\GodotPrograms");
+        File rootDirectory = new  File(System.getProperty("user.home") + slashes +"GodotPrograms");
 
         if (rootDirectory.exists() && rootDirectory.isDirectory()) {
             File[] files = rootDirectory.listFiles();
