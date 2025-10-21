@@ -32,7 +32,6 @@ public class Main {
         String userHome =  System.getProperty("user.home");
         String directoryPath = userHome + "\\GodotPrograms";
         Path programsPath = Paths.get(directoryPath);
-        JOptionPane.showMessageDialog(frame, "I can't tell if you have .NET versions installed, but if you do, then I recommend making sure\nyou also have the standard edtion to be able to run it in the launcher. Elsewise they won't appear in the Launcher","Warning", JOptionPane.WARNING_MESSAGE);
         try{
             if(Files.exists(programsPath)){
 
@@ -43,7 +42,7 @@ public class Main {
         } catch (IOException e){
             System.err.println("Failed to make directory: " + e.getMessage());
         }
-
+        JOptionPane.showMessageDialog(frame, "I can't tell if you have .NET versions installed, but if you do, then I recommend making sure\nyou also have the standard edtion to be able to run it in the launcher. Elsewise they won't appear in the Launcher","Warning", JOptionPane.WARNING_MESSAGE);
         System.out.println("Programs Path: " + programsPath.toString());
         populateComboBox(comboBox);
         checkBox.setSelected(false);
