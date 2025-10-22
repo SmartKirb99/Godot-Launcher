@@ -8,9 +8,10 @@ public class GodotVersionInfo {
     private String versionNumber;
     private boolean isDotNet;
     private String originalFilename;
+    private String osName = System.getProperty("os.name");
 
-    public static final Pattern VERSION_PATTERN = Pattern.compile("Godot_v?(\\d+\\.\\d+(?:\\.\\d+)?)-(stable|stable_mono)_win64");
-
+    public static final Pattern WINDOWS_VERSION_PATTERN = Pattern.compile("Godot_v?(\\d+\\.\\d+(?:\\.\\d+)?)-(stable|stable_mono)_win64");
+    public static final Pattern LINUX_VERSION_PATTERN = Pattern.compile("Godot_v?(\\d+\\.\\d+(?:\\.\\d+)?)-(stable|stable_mono)_linux");
     /**
      * Constructor to get a specific file
      * @param filename The name of the file
@@ -21,7 +22,12 @@ public class GodotVersionInfo {
             throw new IllegalArgumentException("Filename cannot be null");
         }
 
-        Matcher matcher = VERSION_PATTERN.matcher(filename);
+        Matcher matcher;
+        if (osName.contains("Windows")) {
+            matcher = WINDOWS_VERSION_PATTERN.matcher(filename);
+        } else {
+            matcher = LINUX_VERSION_PATTERN.matcher(filename);
+        }
         if (matcher.find()) {
             this.versionNumber = matcher.group(1);
         } else {

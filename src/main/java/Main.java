@@ -48,14 +48,12 @@ public class Main {
         }
         JOptionPane.showMessageDialog(frame, "I can't tell if you have .NET versions installed, but if you do, then I recommend making sure\nyou also have the standard edtion to be able to run it in the launcher. Elsewise they won't appear in the Launcher","Warning", JOptionPane.WARNING_MESSAGE);
         System.out.println("Programs Path: " + programsPath.toString());
+        String osName = System.getProperty("os.name");
+        System.out.println("OS Name: " + osName);
         populateComboBox(comboBox);
         checkBox.setSelected(false);
         try{
-            if (hasMono.getFirst() == true){
-                checkBox.setEnabled(true);
-            } else {
-                checkBox.setEnabled(false);
-            }
+            checkBox.setEnabled(hasMono.getFirst() == true);
         } catch (NoSuchElementException e){
             JOptionPane.showMessageDialog(frame, "You likely only have .NET installations, which kinda also requires the Standard edition to run.", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
@@ -118,18 +116,22 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 try{
                     String fullPath;
-                    if (isMonoInstalled(comboBox.getSelectedIndex()) && checkBox.isSelected()) {
-                        String originalVersion = versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
-                        String toInsert = "_mono";
-                        int lastUnderscoreIndex = originalVersion.lastIndexOf("_");
-                        String prefix = originalVersion.substring(0, lastUnderscoreIndex);
-                        int extensionIndex = originalVersion.lastIndexOf(".");
-                        String suffix = originalVersion.substring(lastUnderscoreIndex, extensionIndex);
-                        String newVersion = prefix + toInsert + suffix + ".exe";
-//                        System.out.println(newVersion);
-                        fullPath = fileLocation + slashes + newVersion;
+                    if (osName.contains("Linux")) {
+                        fullPath = fileLocation + slashes + versions.getFirst().getOriginalFilename() + ".x86_64";
                     } else {
-                        fullPath = fileLocation + slashes + versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
+                        if (isMonoInstalled(comboBox.getSelectedIndex()) && checkBox.isSelected()) {
+                            String originalVersion = versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
+                            String toInsert = "_mono";
+                            int lastUnderscoreIndex = originalVersion.lastIndexOf("_");
+                            String prefix = originalVersion.substring(0, lastUnderscoreIndex);
+                            int extensionIndex = originalVersion.lastIndexOf(".");
+                            String suffix = originalVersion.substring(lastUnderscoreIndex, extensionIndex);
+                            String newVersion = prefix + toInsert + suffix + ".exe";
+//                        System.out.println(newVersion);
+                            fullPath = fileLocation + slashes + newVersion;
+                        } else {
+                            fullPath = fileLocation + slashes + versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
+                        }
                     }
                     ProcessBuilder processBuilder = new ProcessBuilder(fullPath);
 
@@ -235,7 +237,11 @@ public class Main {
                         filenames.add(file.getName());
                         versions.add (new GodotVersionInfo(file.getName()));
                         if (i == 0){
-
+                            if (files[i].getName().contains("_mono")){
+                                hasMono.add(true);
+                            } else {
+                                hasMono.add(false);
+                            }
                         }
                         else if (files[i - 1].getName().contains("_mono")){
                             hasMono.add(true);
