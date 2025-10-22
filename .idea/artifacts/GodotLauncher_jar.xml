@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="GodotLauncher:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/GodotLauncher_jar</output-path>
+    <root id="archive" name="GodotLauncher.jar">
+      <element id="module-output" name="GodotLauncher" />
+    </root>
+  </artifact>
+</component>
