@@ -19,6 +19,7 @@ public class Main {
     static String fileLocation = "";
     static List<GodotVersionInfo> versions = new ArrayList<>();
     static String latestVersion = "4.5.1";
+    static String latest3Version = "3.6.1";
     static String slashes = System.getProperty("file.separator");
     /**
      * Average JFrame stuff, uses {@link #populateComboBox(JComboBox)} to make the comboBox work
@@ -189,10 +190,12 @@ public class Main {
                     if (file.isDirectory() && !file.getName().contains("_mono")){
                         filenames.add(file.getName());
                         versions.add (new GodotVersionInfo(file.getName()));
-                        if (!versions.get(i).getVersionNumber().equals(latestVersion)){
-                            comboBox.addItem("Godot " + versions.get(i).getVersionNumber());
-                        } else {
+                        if (versions.get(i).getVersionNumber().equals(latestVersion)){
                             comboBox.addItem("Godot " + versions.get(i).getVersionNumber() + " (Latest Version)");
+                        } else if (versions.get(i).getVersionNumber().equals(latest3Version)){
+                            comboBox.addItem("Godot " + versions.get(i).getVersionNumber() + " (Latest Godot 3 Version)");
+                        } else {
+                            comboBox.addItem("Godot " + versions.get(i).getVersionNumber());
                         }
                         i++;
                     }
