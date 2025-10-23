@@ -94,19 +94,25 @@ public class Main {
         checkBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String selectedVersion =  (String) comboBox.getSelectedItem() + " .NET Version";
-                String originalVersion = directoryPath + slashes + versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
-                String toInsert = "_mono";
-                int lastUnderscoreIndex = originalVersion.lastIndexOf("_");
-                if (lastUnderscoreIndex != -1) {
-                    String prefix = originalVersion.substring(0, lastUnderscoreIndex);
-                    int extensionIndex = originalVersion.lastIndexOf(".");
-                    String suffix = originalVersion.substring(lastUnderscoreIndex, extensionIndex);
-                    String newVersion = prefix + toInsert + suffix;
+                if (checkBox.isSelected()) {
+                    String selectedVersion =  (String) comboBox.getSelectedItem() + " .NET Version";
+                    String originalVersion = directoryPath + slashes + versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
+                    String toInsert = "_mono";
+                    int lastUnderscoreIndex = originalVersion.lastIndexOf("_");
+                    if (lastUnderscoreIndex != -1) {
+                        String prefix = originalVersion.substring(0, lastUnderscoreIndex);
+                        int extensionIndex = originalVersion.lastIndexOf(".");
+                        String suffix = originalVersion.substring(lastUnderscoreIndex, extensionIndex);
+                        String newVersion = prefix + toInsert + suffix;
 //                    System.out.println(originalVersion);
 //                    System.out.println(newVersion);
-                    fileLocation = newVersion;
+                        fileLocation = newVersion;
+                    }
+                } else {
+                    String selectedVersion = (String) comboBox.getSelectedItem();
+                    fileLocation = directoryPath + slashes + versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
                 }
+
                 System.out.println(checkBox.isSelected());
             }
         });

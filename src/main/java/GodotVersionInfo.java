@@ -2,7 +2,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This class is mostly meant to give Main a structure for Godot versions
+ * This class is meant to give {@link Main} a structure for Godot versions
  */
 public class GodotVersionInfo {
     private String versionNumber;
@@ -70,7 +70,7 @@ public class GodotVersionInfo {
     }
 
     /**
-     * Converts the Version to a readable string, I guess.
+     * Turns the filename into a readable version, so like say Godot_v4.5.1-stable_win64 becomes Version: 4.5.1, Type: Standard
      */
     @Override
     public String toString() {
