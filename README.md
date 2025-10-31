@@ -1,0 +1,1 @@
+A Very basic Launcher for Godot that uses the Standard Editions of Godot you installed, if you also have the .NET version of a specific version of Godot, you can click the checkbox to instead run the .NET version of Godot.
