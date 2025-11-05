@@ -19,7 +19,7 @@ public class Main {
     static String fileLocation = "";
     static List<GodotVersionInfo> versions = new ArrayList<>();
     static String latestVersion = "4.5.1";
-    static String latest3Version = "3.6.1";
+    static String latest3Version = "3.6.2";
     static String slashes = System.getProperty("file.separator");
     /**
      * Average JFrame stuff, uses {@link #populateComboBox(JComboBox)} to make the comboBox work
@@ -67,8 +67,7 @@ public class Main {
         }
         JButton button = new JButton("Open this instance of Godot");
         fileLocation = directoryPath + slashes + versions.getFirst().getOriginalFilename();
-//        System.out.println(fileLocation);
-//        System.out.println(versions.getFirst().getOriginalFilename());
+
 
         comboBox.addActionListener(new ActionListener() {
             @Override
@@ -86,8 +85,6 @@ public class Main {
                         }
                     }
                 }
-
-//                System.out.println(fileLocation);
             }
         });
 
@@ -104,8 +101,6 @@ public class Main {
                         int extensionIndex = originalVersion.lastIndexOf(".");
                         String suffix = originalVersion.substring(lastUnderscoreIndex, extensionIndex);
                         String newVersion = prefix + toInsert + suffix;
-//                    System.out.println(originalVersion);
-//                    System.out.println(newVersion);
                         fileLocation = newVersion;
                     }
                 } else {
@@ -133,7 +128,6 @@ public class Main {
                             int extensionIndex = originalVersion.lastIndexOf(".");
                             String suffix = originalVersion.substring(lastUnderscoreIndex, extensionIndex);
                             String newVersion = prefix + toInsert + suffix + ".exe";
-//                        System.out.println(newVersion);
                             fullPath = fileLocation + slashes + newVersion;
                         } else {
                             fullPath = fileLocation + slashes + versions.get(comboBox.getSelectedIndex()).getOriginalFilename();
@@ -163,14 +157,7 @@ public class Main {
         panel.add(checkBox);
         panel.add(button);
         panel.setBackground(new Color(71,140,191));
-//        panel.setBackground(new Color(0, 48, 156));
         comboBox.setBackground(new Color(16, 184, 204));
-//        comboBox.setBackground(new Color(90, 126, 220));
-//        comboBox.setForeground(Color.WHITE);
-//        checkBox.setForeground(Color.WHITE);
-//        checkBox.setBackground(new Color(0, 48, 156));
-//        button.setForeground(Color.WHITE);
-//        button.setBackground(new Color(0, 48, 156));
 
 
         //Frame stuff
@@ -182,7 +169,7 @@ public class Main {
     }
 
     /**
-     * Basically Fills the Combo Box with versions.
+     * Fills the Combo Box with versions.
      * @param comboBox Pretty much just, a standard {@link JComboBox}
      */
     public static void populateComboBox(JComboBox<String> comboBox) {
@@ -217,7 +204,7 @@ public class Main {
     /**
      * Checks to see if the .NET version is installed for a version at a specific index
      * @param index Because isMonoInstalled runs {@link #getMono() getMono().get(index)}, it uses a specified index to check if that specific version of Godot has the .NET version installed.
-     * @return
+     * @return Returns true if a specific index of {@link #getMono()} is true.
      */
     public static boolean isMonoInstalled(int index){
         return getMono().get(index);
@@ -225,7 +212,7 @@ public class Main {
 
     /**
      * Checks all versions to see if the .NET version of Godot is also installed
-     * @return
+     * @return Returns a list of booleans regarding which version also has the .NET version installed.
      */
     public static List<Boolean> getMono(){
         List<String> filenames = new ArrayList<>();
@@ -268,21 +255,3 @@ public class Main {
     }
 
 }
-/* String standardFilename = "Godot_v4.5.1-stable_win64";
-        String dotNetFilename = "Godot_v4.5.1-stable_mono_win64";
-
-        GodotVersionInfo standardVersionInfo = new GodotVersionInfo(standardFilename);
-        System.out.println(standardFilename + ":");
-        System.out.println(" Version Number: " + standardVersionInfo.getVersionNumber());
-        System.out.println(" Is .NET Version: " + standardVersionInfo.isDotNet());
-        System.out.println(standardVersionInfo);
-
-        System.out.println();
-
-        GodotVersionInfo dotNetVersion = new  GodotVersionInfo(dotNetFilename);
-        System.out.println(dotNetFilename + ":");
-        System.out.println(" Version Number: " + dotNetVersion.getVersionNumber());
-        System.out.println(" Is .NET Version: " + dotNetVersion.isDotNet());
-        System.out.println(dotNetVersion);
-
- */
