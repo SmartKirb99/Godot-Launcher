@@ -9,9 +9,10 @@ public class GodotVersionInfo {
     private boolean isDotNet;
     private String originalFilename;
     private String osName = System.getProperty("os.name");
+    private String versionType;
 
-    public static final Pattern WINDOWS_VERSION_PATTERN = Pattern.compile("Godot_v?(\\d+\\.\\d+(?:\\.\\d+)?)-(stable|stable_mono)_win64");
-    public static final Pattern LINUX_VERSION_PATTERN = Pattern.compile("Godot_v?(\\d+\\.\\d+(?:\\.\\d+)?)-(stable|stable_mono)_linux");
+    public static final Pattern WINDOWS_VERSION_PATTERN = Pattern.compile("Godot_v?((?:\\d+\\.\\d+(?:\\.\\d+)?)[-\\s]?(?:(?:stable|stable_mono)|(?:alpha|beta|rc|dev)\\d*)_?(?:mono)?)_win64");
+    public static final Pattern LINUX_VERSION_PATTERN = Pattern.compile("Godot_v?((?:\\d+\\.\\d+(?:\\.\\d+)?)[-\\s]?(?:(?:stable|stable_mono)|(?:alpha|beta|rc|dev)\\d*)_?(?:mono)?)_linux");
     /**
      * Constructor to get a specific file
      * @param filename The name of the file
@@ -30,6 +31,11 @@ public class GodotVersionInfo {
         }
         if (matcher.find()) {
             this.versionNumber = matcher.group(1);
+            String[] versionParts = versionNumber.split("-");
+            if (versionParts.length > 1){
+             versionNumber = versionParts[0];
+             versionType = versionParts[1];
+            }
         } else {
             this.versionNumber = "Unknown";
         }
@@ -42,7 +48,9 @@ public class GodotVersionInfo {
      * @return Returns the version number of Godot, such as 4.5.1
      */
     public String getVersionNumber() {
-        return versionNumber;
+        String start = versionType;
+        String finish = start.substring(0, 1).toUpperCase() + start.substring(1);
+        return versionNumber + " ("  + finish + ")";
     }
 
     /**
@@ -74,7 +82,21 @@ public class GodotVersionInfo {
      */
     @Override
     public String toString() {
-        String type = isDotNet ? ".NET version" : "Standard Version"; //This feels weird
+        String type = "";
+        if (versionNumber.contains("dev")){
+            type = "Development Version";
+        } else if (versionNumber.contains("alpha")) {
+            type = "Alpha Version";
+        }  else if (versionNumber.contains("beta")) {
+            type = "Beta Version";
+        } else if (versionNumber.contains("rc")) {
+            type = "Release Candidate Version";
+        } else if (versionNumber.contains("stable") && !isDotNet) {
+            type = "Stable Version";
+        }
+        if (isDotNet) {
+            type += ".NET Version";
+        }
         return "Version: " + versionNumber + ", Type: " + type;
     }
 }
